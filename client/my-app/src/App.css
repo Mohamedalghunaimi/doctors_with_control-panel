@@ -1,0 +1,21 @@
+
+.nav {
+    justify-content: space-between;
+}
+.x {
+    transform: rotateY(90deg);
+    transform-origin: left center;
+}
+
+.parent:hover .child {
+    background-color: rgba(0,0,0,0.3);
+    display: block;
+    color: white;
+    font-size: 20px;
+    display: flex;
+}
+
+.parent_1:hover .child_1 {
+    display: block;
+    
+}

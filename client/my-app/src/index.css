@@ -1,0 +1,9 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.parent_1:hover .child_1 {
+    display: block;
+    
+}
