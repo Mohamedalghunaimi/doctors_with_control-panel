@@ -37,7 +37,10 @@ const AllDoctors = () => {
               </li>)
             })}
         </ul>
-        <Doctors doctors={filteredDoctors} />
+        {filteredDoctors.length?<Doctors doctors={filteredDoctors} />:
+        <div className=' capitalize text-center'>
+          there is no doctors 
+          </div>}
     </div>
     <Footer />
     
