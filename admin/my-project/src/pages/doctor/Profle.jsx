@@ -3,15 +3,28 @@ import Sidebar from './compontents/Sidebar'
 import Navbar from './compontents/Navbar'
 import { context } from '../Provider'
 import axios from 'axios'
-  import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'sonner'
 
 const Profile = () => {
-    const {doctorData} = useContext(context)
+    const {doctorData, setDoctorData} = useContext(context)
     const [fees,setFees] = useState(0)
     const [about,setAbout] = useState("")
     const [available,setAvailable] = useState(false)
-    const [address,setAddress] = useState({})
+    const [address,setAddress] = useState({
+        line1:"",
+        line2:""
+    })
     const update = async()=> {
+        console.log(
+            {
+                userId:doctorData._id,
+                fees,
+                about,
+                address,
+                available
+            }
+        )
+         
         try {
             const {data} = await axios.post("http://localhost:5000/api/doctor/update",{
                 userId:doctorData._id,
@@ -22,8 +35,8 @@ const Profile = () => {
             })
             console.log(data)
             if(data.success) {
-                console.log(data)
                 toast.success(data.message)
+                setDoctorData(data.doctor)
             }
         } catch (error) {
             console.log(error)
@@ -64,21 +77,18 @@ const Profile = () => {
                 <div>
                     <span>address:</span>
                     <div className=' flex flex-wrap gap-[5px]'>
-                        <input type='text' value={address.line1} onChange={(e)=> {
-                            let copy = structuredClone(address)
-                            copy.line1 = e.target.value
-                            setAddress(copy)
+                        <input type='text' value={address?.line1||""} onChange={(e)=> {
+                            setAddress({...address,line1:e.target.value})
+
                         }} placeholder='line1' className='border-[1px] p-[5px]' />
                         <input type='text'  onChange={(e)=> {
-                            let copy = structuredClone(address)
-                            copy.line2 = e.target.value
-                            setAddress(copy)
-                        }}  placeholder='line2' value={address.line2} className='border-[1px] p-[5px]' />
+                            setAddress({...address,line2:e.target.value})
+                        }}  placeholder='line2' value={address?.line2||""} className='border-[1px] p-[5px]' />
                     </div>
                 </div>
                 <div className=' flex gap-[10px] items-center'>
                     <input checked={available} onChange={(e)=>setAvailable(e.target.checked)} type='checkbox' id='ava' />
-                    <label htmlFor='ava'>avalible</label>
+                    <label htmlFor='ava'>available</label>
                 </div>
                 <button onClick={()=>update()} className='py-[10px] px-[20px] w-fit bg-blue-500 text-white text-xl font-semibold cursor-pointer rounded-lg capitalize '>
                     save

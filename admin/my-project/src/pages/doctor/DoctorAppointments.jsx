@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState } from 'react'
 import Navbar from './compontents/Navbar'
 import Sidebar from './compontents/Sidebar'
@@ -9,7 +10,7 @@ import { ImCancelCircle } from 'react-icons/im'
 
 const DoctorAppointments = () => {
 
-    const {doctorData,getAppointments,appointments, cancelAppointmentByDoctor, completeAppointment} = useContext(context)
+    const {doctorData,getDoctorAppointments,doctorAppointments, cancelAppointmentByDoctor, completeAppointment} = useContext(context)
 
     const getAge = (birtday)=> {
         const date1 = new Date(birtday)
@@ -19,10 +20,13 @@ const DoctorAppointments = () => {
         
     }
     useEffect(()=> {
-        getAppointments()
+        if(doctorData) {
+            getDoctorAppointments()
+        }
 
 
-    },[])
+
+    },[doctorData])
   return (
     <>
     <Navbar/>
@@ -44,7 +48,7 @@ const DoctorAppointments = () => {
                 </thead>
                 <tbody>
                     {
-                        appointments.map((appointment,index)=> (
+                        doctorAppointments.map((appointment,index)=> (
                             <tr>
                                 <td className='p-[5px]'>{index+1}</td>
                                 <td className='p-[5px] flex items-center gap-[10px]'>
@@ -61,8 +65,8 @@ const DoctorAppointments = () => {
                                         {appointment.isCompleted&&<p className=' text-green-600'>completed</p>}
                                         {!appointment.isCompleted&&!appointment.cancelled&&
                                         <div className=' capitalize flex items-center gap-[20px] '>
-                                    <span onClick={()=> completeAppointment(appointment._id,appointment.doctorId,getAppointments)} className='cursor-pointer font-bold text-green-600  text-2xl'><MdOutlineFileDownloadDone/></span>
-                                    <span onClick={()=> cancelAppointmentByDoctor(appointment._id,appointment.doctorId,getAppointments)} className='cursor-pointer font-bold text-red-600 text-2xl'><ImCancelCircle /></span>
+                                    <span onClick={()=> completeAppointment(appointment._id,appointment.doctorId)} className='cursor-pointer font-bold text-green-600  text-2xl'><MdOutlineFileDownloadDone/></span>
+                                    <span onClick={()=> cancelAppointmentByDoctor(appointment._id,appointment.doctorId)} className='cursor-pointer font-bold text-red-600 text-2xl'><ImCancelCircle /></span>
                                         </div>}
                                     </span></td>
                             </tr>

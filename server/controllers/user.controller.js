@@ -36,6 +36,10 @@ const register = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const login = async(req,res) => {
@@ -58,14 +62,17 @@ const login = async(req,res) => {
         }
         const token = await jwt.sign({email},process.env.token_secret)
         res.cookie("token",token)
+        const {password:_,...result} = user
         res.json({
             success:true,
             message:"the login operation is done !",
-            user
+            user:result
         })
     } catch (error) {
-        console.log(error)
-    }
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })    }
 }
 const protectAuth = async(req,res,next) => {
     try {
@@ -86,7 +93,7 @@ const protectAuth = async(req,res,next) => {
 const isAuth = async(req,res) => {
     const email = req.email
     try {
-        const user = await User.findOne({email},{__v:false})
+        const user = await User.findOne({email},{__v:false,password:false})
         if(!user) {
             return res.json({
                 success:false,
@@ -99,6 +106,10 @@ const isAuth = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const updateProfile = async(req,res) => {
@@ -116,6 +127,19 @@ const updateProfile = async(req,res) => {
         });
         const image = result.secure_url;
         await main();
+        const user = await User.findById(userId).select("email");
+        if(!user) {
+            return res.json({
+                success:false,
+                message:"user is not found"
+            })
+        }
+        if(user.email!==req.email) {
+            return res.json({
+                success:false,
+                message:"forbidden"
+            })
+        }
         const updatedUser = await User.findByIdAndUpdate(userId,{
             email,phone,address:JSON.parse(address),birthday,gender,image
             

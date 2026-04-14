@@ -13,7 +13,10 @@ const AddDoctor = () => {
     const [name,setName] = useState("")
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("")
-    const [address,setAddress] = useState({})
+    const [address,setAddress] = useState({
+        line1:"",
+        line2:""
+    })
     const [speciality,setSpeciality] = useState("")
     const [fees,setFees] = useState(0);
     const [experience,setExperience] = useState("")
@@ -102,15 +105,13 @@ const AddDoctor = () => {
                         <div className='flex flex-col  w-[100%] lg:w-[49%]'>
                             <lable className=' capitalize font-semibold'>address</lable>
                             <div className=' flex flex-col gap-[5px]'>
-                                <input disabled={loading}  type='text' value={address?address.line1:""} onChange={(e)=> {
-                                    let copy = structuredClone(address)
-                                    copy.line1 = e.target.value
-                                    setAddress(copy)
+                                <input disabled={loading}  type='text' value={address.line1} onChange={(e)=> 
+                                {
+                                    setAddress({...address,line1:e.target.value})
+
                                 }} className='border-[1px] border-gray-300 p-[5px]' placeholder='address1' />
-                                <input disabled={loading}  type='text' value={address?address.line2:""} onChange={(e)=> {
-                                    let copy = structuredClone(address)
-                                    copy.line2 = e.target.value
-                                    setAddress(copy)
+                                <input disabled={loading}  type='text' value={address.line2} onChange={(e)=> {
+                                        setAddress({...address,line2:e.target.value})
                                 }}  className='border-[1px] border-gray-300 p-[5px]' placeholder='address2' />
                             </div>
                         </div>

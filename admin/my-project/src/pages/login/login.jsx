@@ -1,7 +1,8 @@
-import { use, useContext, useEffect, useState } from 'react'
+import {  useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { context } from '../Provider'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 const Login = () => {
   const [isAdmin,setIsAdmin]= useState(true)
   const [email,setEmail] = useState("")
@@ -19,6 +20,9 @@ const Login = () => {
       if(data.success) {
         setDoctorData(data.doctor)
         nav("/doctor/dashboard")
+      } else {
+        toast.error(data.message)
+
       }
     } else {
         axios.defaults.withCredentials= true;
@@ -28,6 +32,8 @@ const Login = () => {
         if(data.success) {
           nav("/admin/dashboard")
           setAdminData(true)
+        } else {
+          toast.error(data.message)
         }
     }
     } catch (error) {

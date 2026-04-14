@@ -1,4 +1,4 @@
-import React, { use, useContext, useEffect, useState } from 'react'
+import React, {  useContext, useEffect, useState } from 'react'
 import Navbar from './compontents/Navbar'
 import Sidebar from './compontents/Sidebar'
 import axios from 'axios'
@@ -6,8 +6,7 @@ import { context } from '../Provider'
 import { ImCancelCircle } from 'react-icons/im'
 
 const Appointments = () => {
-    const [appointments,setAppointments] = useState([])
-    const {cancelAppointment} = useContext(context)
+    const {cancelAppointment,appointments,setAppointments} = useContext(context)
     const getAge = (birtday)=> {
         const date1 = new Date(birtday)
         const date2 = new Date();

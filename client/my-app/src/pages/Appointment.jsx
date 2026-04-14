@@ -20,20 +20,21 @@ const Appointment = () => {
       const {data} = await axios.post("http://localhost:5000/api/appointment/my-appointments",{
         userId:isAuth._id
       })
+      console.log(data)
       if(data.success) {
         setAppointments(data.appointments)
       }
     } catch (error) {
-      
+      console.error(error)
     }
   }
-  const cancelAppointmentByPatient = async(userId,appointmentId,fun)=> {
+  const cancelAppointmentByPatient = async(userId,appointmentId,fn)=> {
     try {
       const {data} = await axios.post("http://localhost:5000/api/appointment/user-cancel",{
         userId,appointmentId
       })
       if(data.success) {
-        fun()
+        await getMyAppointment()
         toast.success(data.message)
       }
     } catch (error) {
@@ -42,12 +43,10 @@ const Appointment = () => {
 
   }
   const payOnline = async(appointmentId) => {
-    console.log("yess")
     try {
       const {data} = await axios.post("http://localhost:5000/api/appointment/pay-online",{
         appointmentId
       })
-      console.log(data)
       if(data.success) {
         window.location.assign(data.url)
       }
@@ -64,6 +63,12 @@ const Appointment = () => {
       <Navbar />
       <div className=' container mx-auto flex-1 mt-[20px]'>
         <h1 className=' capitalize text-xl font-bold text-slate-700 mb-[10px]'>my appointments</h1>
+        <div className=' flex-1'>
+          {
+            appointments.length===0? <div className=' text-center font-semibold text-2xl capitalize'>there is no appointments</div>:
+          
+<>
+        
         {
           appointments.map((appointment,index)=> {
             return(<>
@@ -75,8 +80,8 @@ const Appointment = () => {
                   <p className='text-sm font-semibold text-gray-700'>{appointment.doctorId.speciality}</p>
                   <p>
                     <b>address:</b>
-                    <p>{appointment?JSON.parse(appointment.doctorId.address).line1:""}</p>
-                    <p>{appointment?JSON.parse(appointment.doctorId.address).line1:""}</p>
+                    <p>{appointment?.doctorId?.address?.line1}</p>
+                    <p>{appointment?.doctorId?.address?.line2}</p>
                   </p>
                   <p className=' font-bold text-gray-700'>date & time : <span>{new Date(appointment.doctorId.date).toLocaleDateString()} </span>
                   | <span>{appointment.slotTime}</span>
@@ -103,7 +108,7 @@ const Appointment = () => {
                   <img onClick={()=>payOnline(appointment._id)} src={assets.stripe_logo} className='w-[100px] mx-auto cursor-pointer' alt=''/>
                 </>}
                 <button onClick={()=> {
-                  cancelAppointmentByPatient(isAuth._id,appointment._id,getMyAppointment)
+                  cancelAppointmentByPatient(isAuth._id,appointment._id)
 
                 }}  className='py-[10px] cursor-pointer px-[20px] border-[1px]'>
                   cancel appointment
@@ -118,6 +123,9 @@ const Appointment = () => {
             </>)
           })
         }
+        </>
+      }
+        </div>
       </div>
       <Footer/>
     </div>

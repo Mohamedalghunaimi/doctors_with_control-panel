@@ -7,7 +7,7 @@ require("dotenv").config()
 const bcrypt = require("bcryptjs")
 
 const addDoctor = async(req,res)=> {
-    const {name,email,password,address,speciality,degree,experience,available,fees,about} = req.body;
+    const {name,email,password,address,speciality,degree,experience,fees,about} = req.body;
         if(!email||!password||!name||!address||!speciality||!degree||!experience||!fees||!about||!req.file) {
             return res.json({
                 success:false,
@@ -20,7 +20,7 @@ const addDoctor = async(req,res)=> {
     });
     const image = result.secure_url;
     const date = Date.now();
-    const originalAddress = JSON.parse(JSON.stringify(address)) 
+    const originalAddress = JSON.parse(address) 
 
     try {
         await main()
@@ -67,6 +67,10 @@ const getDoctors =async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const getAppointments =  async(req,res) => {
@@ -85,6 +89,10 @@ const getAppointments =  async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const dashboardData = async(req,res) => {
@@ -111,6 +119,10 @@ const dashboardData = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const adminLogin = async(req,res) => {
@@ -163,7 +175,10 @@ const adminLogout = async(req,res) => {
             success:true
         })
     } catch (error) {
-        
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const authAdmin = async(req,res) => {
@@ -186,30 +201,71 @@ const canceledAppointmentByAdmin = async(req,res) => {
     const {appointmentId,doctorId} = req.body
     try {
         await main()
-        const appointment = await Appointment.findOneAndUpdate({_id:appointmentId,doctorId,cancelled:false},{cancelled:true,isCompleted:false})
-        const doctor = await Doctor.findById(doctorId)
-        const copy = structuredClone(doctor.slots_books)
-        copy[appointment.slotDate] = copy[appointment.slotDate].filter(item => item !== appointment.slotTime);
-        doctor.slots_books = copy
-        await doctor.save()
-        /*
-if (doctor.slots_books[appointment.slotDate]?.includes(appointment.slotTime)) {
-    doctor.slots_books[appointment.slotDate] = doctor.slots_books[appointment.slotDate].filter(item => item !== appointment.slotTime);
-    doctor.markModified('slots_books');
-    await doctor.save();
-}*/
-
-        console.log(doctor.slots_books)
+        const appointment = await Appointment.findOne({
+            _id:appointmentId,
+            doctorId,
+        })
+       
 
         if(!appointment) {
             return res.json({
-                success:true,
-                message : "is cancelled already"
+                success:false,
+                message : "appointment not found"
             })
         }
+        if(appointment.cancelled) {
+            return res.json({
+                success:false,
+                message : "appointment is already cancelled"
+            })
+        }
+        if(appointment.isCompleted) {
+            return res.json({
+                success:false,
+                message : "appointment is completed"
+            })
+        }
+        if(appointment.payment) {
+            return res.json({
+                success:false,
+                message : "you can't cancele it ,it's paied"
+            })
+        }
+        const doctor = await Doctor.findById(doctorId)
+        if(!doctor) {
+            return   res.json({
+                meessage:"doctor is not exist",
+                success:false
+            })
+        }
+        const copy = structuredClone(doctor.slots_books)
+        copy[appointment.slotDate] = copy[appointment.slotDate].filter(item => item !== appointment.slotTime);
+        if(copy[appointment.slotDate].length===0) {
+            delete copy[appointment.slotDate]
+        }
+        doctor.slots_books = copy
+        await doctor.save();
+        const updatedAppointment = await Appointment.findOneAndUpdate({
+            _id:appointmentId,
+            doctorId,
+        },
+            {cancelled:true,isCompleted:false},
+            {new:true}
+        )
+        .populate([
+            {
+                path: 'userId', 
+                select: '-password -email' 
+            },
+            {
+                path: 'doctorId', 
+                select: '-password -email' 
+            }
+        ])
+
         res.json({
             success:true,
-            message:"canceled!"
+            appointment:updatedAppointment
 
         })
     } catch (error) {
@@ -220,13 +276,20 @@ const updateDoctor = async(req,res) => {
     const {doctorId,available} = req.body
     try {
         await main()
+        const existingDoctor = await Doctor.findById(doctorId);
+        if(!existingDoctor) {
+            return res.json({
+                success:false,
+                message:"doctor not found"
+            })
+        }
         const updatedDoctor = await Doctor.findByIdAndUpdate(doctorId,{
             available
-
         },{new:true})
         res.json({
             success:true,
-            message:"updated"
+            message:"updated",
+            doctor:updatedDoctor
 
         })
     } catch (error) {

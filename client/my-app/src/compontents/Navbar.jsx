@@ -45,7 +45,7 @@ const Navbar = () => {
         :
         <div className='relative parent'>
             <img src={isAuth.image} className=' cursor-pointer w-[50px] h-[50px] rounded-full' alt='' />
-            <ul className=' hidden child capitalize z-[100] bg-white shadow-lg p-[10px] px-[20px] absolute bottom-0 left-0 translate-x-[-70%] rounded-2xl border-t-[1px] rounded-tr-none translate-y-[100%]'>
+            <ul className=' hidden child capitalize z-[100] flex-col gap-2 bg-white shadow-lg p-[10px] px-[20px] absolute bottom-0 left-0 translate-x-[-70%] rounded-2xl border-t-[1px] rounded-tr-none translate-y-[100%]'>
                 <li onClick={()=> nav("/profile")} className=' cursor-pointer mt-[10px] duration-300 hover:underline'>profile</li>
                 <li onClick={()=>nav("/appointments")} className=' cursor-pointer  mt-[10px]  duration-300 hover:underline' >appointements</li>
                 <li onClick={()=> {

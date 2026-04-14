@@ -24,7 +24,7 @@ const doctorLogin = async(req,res) => {
         const isMatch = await bcrypt.compare(password,doctor.password)
         if(!isMatch) {
             return res.json({
-                success:true,
+                success:false,
                 message:"invalid inputs"
             })
         }
@@ -37,11 +37,14 @@ const doctorLogin = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const protectDoctorRoutes = async(req,res,next) => {
     const {doctorToken} = req.cookies;
-    console.log({doctorToken})
     try {
         const {email} = await jwt.verify(doctorToken,process.env.doctor_token_secret);
         if(!email) {
@@ -57,7 +60,6 @@ const protectDoctorRoutes = async(req,res,next) => {
     }
 }
 const doctorData = async(req,res) => {
-    console.log("yes")
     try {
         if(!req.doctorEmail) {
             return res.json({
@@ -73,6 +75,10 @@ const doctorData = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const doctorLogout = async(req,res) => {
@@ -89,6 +95,19 @@ const dashboardDoctorData = async(req,res) => {
     const {doctorId} = req.body
     try {
         await main();
+        const doctor = await Doctor.findById(doctorId);
+        if(!doctor) {
+            return res.json({
+                success:false,
+                message:"doctor not found"
+            })
+        }
+        if(doctor.email!==req.doctorEmail) {
+            return res.json({
+                success:false,
+                message:"forbidden"
+            })
+        }
         const appointments = await Appointment.find({doctorId,cancelled:false})
         const totalAppointments = appointments.length
         let totalEarnings = 0;
@@ -113,12 +132,29 @@ const dashboardDoctorData = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const getDoctorAppointments = async(req,res) => {
     const {doctorId} = req.body;
     try {
         await main();
+        const doctor = await Doctor.findById(doctorId);
+        if(!doctor) {
+            return res.json({
+                success:false,
+                message:"doctor not found"
+            })
+        }
+        if(doctor.email!==req.doctorEmail) {
+            return res.json({
+                success:false,
+                message:"forbidden"
+            })
+        }
         const appointments = await Appointment.find({doctorId}).populate({
             path:"userId",
             select:"-password"
@@ -129,27 +165,56 @@ const getDoctorAppointments = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 } 
 const updateProfile = async(req,res) => {
     const {
-        userId,about,avaliable,
-        fees,address
+        userId,about,available,
+        fees
     } = req.body
+    
     try {
         await main();
-        const doctor = await Doctor.findByIdAndUpdate(userId,{
-            fees,
-            avaliable,
+        const address =  JSON.parse(req.body.address)
+
+        const doctor = await Doctor.findById(userId);
+        if(!doctor) {
+            return res.json({
+                success:false,
+                message:"doctor not found"
+            })
+        }
+        if(doctor.email!==req.doctorEmail) {
+            return res.json({
+                success:false,
+                message:"forbidden"
+            })
+        }
+        const updatedDoctor = await Doctor.findByIdAndUpdate(
+        doctor._id,
+        {
             about,
-            address:JSON.parse(address)
-        })
+            available,
+            fees,
+            address
+        },
+        {new:true}
+        ).select("-password -email")
         res.json({
             success:true,
-            message:"updated !"
+            message:"updated !",
+            doctor:updatedDoctor
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const getDoctorsForUser = async(req,res)=> {
@@ -162,6 +227,10 @@ const getDoctorsForUser = async(req,res)=> {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 } 
 

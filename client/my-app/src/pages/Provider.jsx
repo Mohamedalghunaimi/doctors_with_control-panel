@@ -17,7 +17,6 @@ const Provider = ({children}) => {
         try {
             axios.defaults.withCredentials = true;
             const {data} = await axios.get("http://localhost:5000/api/auth/is_auth");
-            console.log(data)
             if(data.success) {
                 setIsAuth(data.user)
             }
@@ -32,7 +31,7 @@ const Provider = ({children}) => {
                 setDbDoctors(data.doctors)
             } 
         } catch (error) {
-            
+            console.log(error)
         }
     }
     useEffect(()=> {

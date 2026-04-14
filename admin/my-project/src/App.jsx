@@ -5,13 +5,13 @@ import Dashboard from './pages/doctor/Dashboard'
 import Login from './pages/login/login'
 import { useContext } from 'react'
 import { context } from './pages/Provider'
-import DoctorAppointments from './pages/doctor/DoctorAppointments'
 import Profile from './pages/doctor/Profle'
 import { Toaster,  } from "sonner";
 import AdminDashboard from './pages/admin/AdminDashboard'
 import Appointments from './pages/admin/Appointments'
 import DoctorsList from './pages/admin/DoctorsList'
 import AddDoctor from './pages/admin/AddDoctor'
+import DoctorAppointments from './pages/doctor/DoctorAppointments'
 
 function App() {
   const {doctorData,adminData} = useContext(context)

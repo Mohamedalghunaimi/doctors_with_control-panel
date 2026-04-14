@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, } from 'react'
 import Navbar from './compontents/Navbar'
 import Sidebar from './compontents/Sidebar'
-import axios from 'axios'
 import { context } from '../Provider'
 import { ImCancelCircle } from "react-icons/im";
 
@@ -49,7 +48,7 @@ const AdminDashboard = () => {
                     completed
                 </span>   
                 </>:<>
-                <span onClick={()=> cancelAppointment(appointment._id,appointment.doctorId._id,getAllAppointments)} className=' text-red-600 text-2xl cursor-pointer'>
+                <span onClick={()=> cancelAppointment(appointment._id,appointment.doctorId._id)} className=' text-red-600 text-2xl cursor-pointer'>
                     <ImCancelCircle />
                 </span>                
                 </>}
