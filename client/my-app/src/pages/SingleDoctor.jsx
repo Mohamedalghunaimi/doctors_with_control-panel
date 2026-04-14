@@ -28,7 +28,8 @@ const SingleDoctor = () => {
     useEffect(()=> {
         toTop()
         fetchProduct()
-        setDay("");setHour("")
+        setDay("");
+        setHour("")
     },[id,dbDoctors])
     useEffect(()=> {
         fetchRelated()

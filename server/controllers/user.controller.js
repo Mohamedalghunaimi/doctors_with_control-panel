@@ -62,11 +62,11 @@ const login = async(req,res) => {
         }
         const token = await jwt.sign({email},process.env.token_secret)
         res.cookie("token",token)
-        const {password:_,...result} = user
+        user.password=""
         res.json({
             success:true,
             message:"the login operation is done !",
-            user:result
+            user
         })
     } catch (error) {
         return res.json({

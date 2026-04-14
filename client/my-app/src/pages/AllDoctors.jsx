@@ -3,7 +3,6 @@ import Navbar from '../compontents/Navbar'
 import Footer from '../compontents/Footer'
 import { doctors, specialityData } from '../assets_frontend/assets'
 import Doctors from '../compontents/Doctors'
-import { unstable_setDevServerHooks } from 'react-router-dom'
 import { context } from './Provider'
 
 const AllDoctors = () => {

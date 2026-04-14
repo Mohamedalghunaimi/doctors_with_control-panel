@@ -15,6 +15,7 @@ const addAppointment = async(req,res) => {
     } = req.body
     try {
         await main();
+        console.log({userId})
         const user = await User.findById(userId).select("email _id");
         if(!user) {
             return res.json({
