@@ -57,7 +57,7 @@ const Navbar = () => {
         </div>
 
     <div className=' flex px-[20px] md:px-0 md:hidden container mx-auto py-[20px] ' >
-        <span onClick={()=>setShowNav(!showNav)} className=' font-bold text-3xl cursor-pointer'>
+        <span onClick={()=>setShowNav(!showNav)} className=' font-bold text-3xl text-blue-500 cursor-pointer'>
             <CiMenuFries />
         </span>
     <div className={`flex ${!showNav?"x":""} duration-300 flex-col items-center text-center h-screen justify-between bg-white z-[100] text-black border-l-[1px] shadow-lg border-l-gray-300 p-[30px] fixed top-0 left-0 `}>

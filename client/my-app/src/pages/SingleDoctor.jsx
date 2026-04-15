@@ -10,7 +10,7 @@ import axios from 'axios'
 import {  toast } from 'react-toastify';
 
 const SingleDoctor = () => {
-    const {toTop,appointments,setAppointments,isAuth,dbDoctors} = useContext(context)
+    const {toTop,isAuth,dbDoctors} = useContext(context)
     const {id} = useParams();
     const [doctor,setDoctor] = useState(false)
     const [relatedDoctors,setRelatedDoctors] = useState([])

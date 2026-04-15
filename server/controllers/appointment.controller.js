@@ -13,9 +13,15 @@ const addAppointment = async(req,res) => {
         slotDate,slotTime,
         amount,
     } = req.body
+    if(!userId || !doctorId || !slotTime || !amount) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main();
-        console.log({userId})
+
         const user = await User.findById(userId).select("email _id");
         if(!user) {
             return res.json({
@@ -36,7 +42,21 @@ const addAppointment = async(req,res) => {
                 message:"there is no doctor"
             })
         }
+        const existingAppointment = await Appointment.findOne({
+            userId,
+            doctorId,
+            slotDate,
+            slotTime,
+            cancelled:false
 
+
+        })
+        if(existingAppointment) {
+            return res.json({
+                success:false,
+                message:"appointment is already exist"
+            })
+        }
         const bookedSlots = structuredClone(doctor.slots_books)
         if(bookedSlots[slotDate]) {
             if(bookedSlots[slotDate].includes(slotTime)) {
@@ -53,19 +73,7 @@ const addAppointment = async(req,res) => {
         }
         doctor.slots_books = bookedSlots
         await doctor.save();
-        const existingAppointment = await Appointment.findOne({
-            userId,
-            doctorId,
-            slotDate,
-            slotTime,
 
-        })
-        if(existingAppointment) {
-            return res.json({
-                success:false,
-                message:"appointment is already exist"
-            })
-        }
         const newAppointment = new Appointment({
             userId,
             doctorId,
@@ -264,7 +272,7 @@ const appointmentsForUser = async(req,res) => {
                 message:"forbidden"
             })        
         }
-        let appointments = await Appointment.find({userId,cancelled:false}).populate({
+        let appointments = await Appointment.find({userId,cancelled:false,isCompleted:false}).populate({
             path:'doctorId',
             select:"-password -slots_books -email"
         })
