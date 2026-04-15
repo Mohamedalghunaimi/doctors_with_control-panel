@@ -10,6 +10,12 @@ require("dotenv").config()
 
 const register = async(req,res) => {
     const {email,name,password} = req.body;
+    if(!email || !name || !password) {
+        return res.json({
+            success:false,
+            message:"missing details!"
+        })
+    }
     try {
         await main()
         const user = await User.findOne({email})
@@ -43,7 +49,13 @@ const register = async(req,res) => {
     }
 }
 const login = async(req,res) => {
-    const {email,password} = req.body
+    const {email,password} = req.body;
+    if(!email || !password) {
+        return res.json({
+            success:false,
+            message:"missing details!"
+        })
+    }
     try {
         await main();
         const user = await User.findOne({email})

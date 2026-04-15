@@ -92,7 +92,13 @@ const doctorLogout = async(req,res) => {
     }
 }
 const dashboardDoctorData = async(req,res) => {
-    const {doctorId} = req.body
+    const {doctorId} = req.body;
+    if(!doctorId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main();
         const doctor = await Doctor.findById(doctorId);
@@ -140,6 +146,12 @@ const dashboardDoctorData = async(req,res) => {
 }
 const getDoctorAppointments = async(req,res) => {
     const {doctorId} = req.body;
+    if(!doctorId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main();
         const doctor = await Doctor.findById(doctorId);

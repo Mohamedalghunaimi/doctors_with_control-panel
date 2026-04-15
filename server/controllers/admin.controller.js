@@ -76,13 +76,15 @@ const getDoctors =async(req,res) => {
 const getAppointments =  async(req,res) => {
     try {
         await main();
-        const appointments = await Appointment.find({}).populate({ 
+        const appointments = await Appointment.find({}).populate([{ 
             path: 'userId', 
             select: '-password -email' 
-        }).populate({
+        },
+        {
             path: 'doctorId', 
             select: '-password -email' 
-        })       
+        }
+        ])     
         res.json({
             success:true,
             appointments
@@ -152,7 +154,6 @@ const adminLogin = async(req,res) => {
 }
 const isAdmin = async(req,res,next) => {
     const {adminToken} = req.cookies
-    console.log({adminToken})
     try {
         const decodedToken = await jwt.verify(adminToken,process.env.admin_token_secret)
 
@@ -199,13 +200,18 @@ const authAdmin = async(req,res) => {
 }
 const canceledAppointmentByAdmin = async(req,res) => {
     const {appointmentId,doctorId} = req.body
+    if(!appointmentId || !doctorId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main()
         const appointment = await Appointment.findOne({
             _id:appointmentId,
             doctorId,
         })
-       
 
         if(!appointment) {
             return res.json({
@@ -270,10 +276,20 @@ const canceledAppointmentByAdmin = async(req,res) => {
         })
     } catch (error) {
         console.log(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const updateDoctor = async(req,res) => {
-    const {doctorId,available} = req.body
+    const {doctorId,available=false} = req.body
+    if(!doctorId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main()
         const existingDoctor = await Doctor.findById(doctorId);

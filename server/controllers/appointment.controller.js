@@ -96,20 +96,43 @@ const addAppointment = async(req,res) => {
     }
 }
 const changeAvaliablity = async(req,res)=> {
-    const {doctorId,available} = req.body
+    const {doctorId,available=false} = req.body;
+    if(!doctorId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main();
+        const existingDoctor = await Doctor.findById(doctorId);
+        if(!existingDoctor) {
+            return res.json({
+                success:false,
+                message:"doctor not found"
+            })
+        }
         await Doctor.findByIdAndUpdate(doctorId,{available})
         res.json({
             success:true,
             message:"done !"
         })
     } catch (error) {
-        console.log(error)
+        console.error(error)
+        return res.json({
+            success:false,
+            message:"something went wrong in the server"
+        })
     }
 }
 const canelAppointmentForDoctor= async(req,res)=> {
-    const {appointmentId,doctorId} = req.body
+    const {appointmentId,doctorId} = req.body;
+    if(!appointmentId || !doctorId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
 
 
     
@@ -338,17 +361,25 @@ const cancelAppointmentForUser = async(req,res) => {
     }
 }
 const payOnline = async(req,res) => {
-    const {appointmentId} = req.body
+    const {appointmentId} = req.body;
+    if(!appointmentId) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
 
     try {
         await main();
-        const appointment = await Appointment.findById(appointmentId).populate({
+        const appointment = await Appointment.findById(appointmentId).populate([{
             path:"userId",
             select:"-password -email "
-        }).populate({
+        },
+        {
             path:"doctorId",
             select:"-password -email -slots_books "   
-        })
+        }
+        ])
         const token = await jwt.sign({appointmentId:appointment._id},process.env.stripe_secret)
         const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -379,13 +410,25 @@ const payOnline = async(req,res) => {
 
 }
 const isPaied = async(req,res) => { 
-    const {token} = req.body
+    const {token} = req.body;
+    if(!token) {
+        return res.json({
+            success:false,
+            message:"missing details"
+        })
+    }
     try {
         await main();
         const decodedToken = await jwt.verify(token,process.env.stripe_secret)
         const appointment = await Appointment.findByIdAndUpdate(decodedToken.appointmentId,{
             payment:true
         })
+        if(!appointment) {
+            return res.json({
+                success:false,
+                message:"appointment not found"
+            })
+        }
         res.json({
             success:true,
             message:"successfully payment!"
