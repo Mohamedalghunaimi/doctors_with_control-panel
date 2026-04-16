@@ -8,14 +8,34 @@
 }
 
 .parent:hover .child {
-    background-color: rgba(0,0,0,0.3);
-    display: block;
-    color: white;
-    font-size: 20px;
     display: flex;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+
 }
 
 .parent_1:hover .child_1 {
     display: block;
     
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* background */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* handle */
+::-webkit-scrollbar-thumb {
+  background: #3b82f6; /* أزرق */
+  border-radius: 10px;
+}
+
+/* hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #2563eb; /* أزرق غامق */
 }

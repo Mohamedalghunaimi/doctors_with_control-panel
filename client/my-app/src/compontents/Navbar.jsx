@@ -5,12 +5,14 @@ import { context } from '../pages/Provider'
 import axios from 'axios'
 import { CiMenuFries } from "react-icons/ci";
 import { MdOutlineCancel } from "react-icons/md";
+import { MdCancel } from "react-icons/md";
 
 const Navbar = () => {
     const {isAuth,setIsAuth} = useContext(context)
     const location = useLocation()
     const nav = useNavigate()
     const [showNav,setShowNav] = useState(false)
+    const [showListInfo,setShowListInfo] = useState(false)
     const logout = async()=> {
         try {
             const {data} = await axios.get("http://localhost:5000/api/auth/logout")
@@ -44,8 +46,8 @@ const Navbar = () => {
         </button>
         :
         <div className='relative parent'>
-            <img src={isAuth.image} className=' cursor-pointer w-[50px] h-[50px] rounded-full' alt='' />
-            <ul className=' hidden child capitalize z-[100] flex-col gap-2 bg-white shadow-lg p-[10px] px-[20px] absolute bottom-0 left-0 translate-x-[-70%] rounded-2xl border-t-[1px] rounded-tr-none translate-y-[100%]'>
+            {showListInfo?<MdCancel className=' cursor-pointer text-2xl' onClick={()=>setShowListInfo(false)}/>:<img onClick={()=>setShowListInfo((prev)=>(!prev)) } src={isAuth.image} className=' cursor-pointer w-[50px] h-[50px] rounded-full' alt='' />}
+            <ul className={`${showListInfo?"flex":"hidden"} duration-300 capitalize z-[100] flex-col gap-2 bg-white shadow-lg p-[10px] px-[20px] absolute bottom-0 left-0 translate-x-[-70%] rounded-2xl border-t-[1px] rounded-tr-none translate-y-[100%]`}>
                 <li onClick={()=> nav("/profile")} className=' cursor-pointer mt-[10px] duration-300 hover:underline'>profile</li>
                 <li onClick={()=>nav("/appointments")} className=' cursor-pointer  mt-[10px]  duration-300 hover:underline' >appointements</li>
                 <li onClick={()=> {

@@ -19,7 +19,7 @@ const AddDoctor = () => {
     })
     const [speciality,setSpeciality] = useState("")
     const [fees,setFees] = useState(0);
-    const [experience,setExperience] = useState("")
+    const [experience,setExperience] = useState("1year")
     const [about,setAbout] = useState("")
     const [available,setAvailable] = useState(false)
     const [degree,setDegree] = useState("")
@@ -53,7 +53,6 @@ const AddDoctor = () => {
         }
 
     }
-    console.log(adminData)
     
 
 
@@ -65,10 +64,10 @@ const AddDoctor = () => {
             <Sidebar />
             <div className='flex-1 p-[20px] bg-gray-100'>
                 <h1 className=' capitalize text-2xl font-semibold'>add doctor</h1>
-                <form className=' p-[20px] bg-white mt-[20px] lg:w-[80%] shadow-md border-[1px] border-gray-300'>
-                    <div className=' mb-[20px]'>
-                        <label htmlFor='img' className='cursor-pointer'>
-                            <input disabled={loading}  onChange={(e)=>setImg(e.target.files[0])} type='file' id='img' hidden/>
+                <form className=' p-[20px] bg-white mt-[20px] lg:w-[80%] shadow-md border-[1px] border-gray-300 rounded-2xl'>
+                    <div className=' mb-[20px] '>
+                        <label htmlFor='img' className='cursor-pointer w-fit'>
+                            <input disabled={loading}  onChange={(e)=>setImg(e.target.files[0])} type='file' className='w-full' id='img' hidden/>
                             <img src={img?URL.createObjectURL(img):assets.upload_area} className='w-[150px] h-[150px] rounded-full' alt='' />
                         </label>
                         <p className=' capitalize text-xl font-semibold text-gray-800'>upload doctor picture</p>
@@ -80,7 +79,7 @@ const AddDoctor = () => {
                         </div>
                         <div className='flex flex-col gap-[5px] w-[100%] lg:w-[49%]'>
                             <label  className=' capitalize font-semibold'>speciality</label>
-                            <select disabled={loading}  onChange={(e)=>setSpeciality(e.target.value)}  className='border-[1px] border-gray-300 p-[5px]'>
+                            <select disabled={loading}  onChange={(e)=>setSpeciality(e.target.value)} className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option>select speciality</option>
                                 <option value={"General physician"}>General physician</option>
                                 <option value={"Gynecologist"}>Gynecologist</option>

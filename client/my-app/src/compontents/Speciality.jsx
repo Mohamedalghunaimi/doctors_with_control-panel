@@ -1,5 +1,6 @@
 import React from 'react'
 import { specialityData } from '../assets_frontend/assets'
+import { Link } from 'react-router-dom'
 
 const Speciality = () => {
   return (
@@ -12,10 +13,10 @@ const Speciality = () => {
             {
                 specialityData.map((item)=> {
                     return(<>
-                    <div>
+                    <Link className=' duration-300 hover:scale-110' to={`/all-doctors?type=${item.speciality}`}>
                         <img src={item.image} alt='' />
                         <p>{item.speciality}</p>
-                    </div>
+                    </Link>
                     
                     
                     </>)

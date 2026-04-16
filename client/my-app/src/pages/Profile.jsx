@@ -6,6 +6,8 @@ import { useActionData } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { FaDownload } from "react-icons/fa6";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Profile = () => {
     const {isAuth,setIsAuth}  = useContext(context)
@@ -65,11 +67,11 @@ const Profile = () => {
         <Navbar/>
         {edit?
         <form  className='container mx-auto mt-[30px] flex-col flex gap-[20px]'>
-            <label htmlFor='image'  className=' relative block parent2  w-fit overflow-hidden cursor-pointer' >
+            <label htmlFor='image'  className=' relative block parent   w-fit overflow-hidden cursor-pointer' >
                 <input  disabled={loading} onChange={(e)=>setImage(e.target.files[0])} hidden type='file' id='image'/>
                 <img src={image?URL.createObjectURL(image):isAuth.image} className=' w-[200px] h-[200px] rounded-full' alt='' />
-                <div className=' absolute items-center justify-center top-0 left-0  w-[100%] h-[100%] hidden child2 rounded-full ' >
-<FaDownload />
+                <div className=' absolute items-center justify-center top-0 left-0 hidden child  w-[100%] h-[100%] flex rounded-full ' >
+                    <FaDownload />
                 </div>
             </label>
             <h1 className=' font-bold capitalize text-xl'>{isAuth.name}</h1>
@@ -112,7 +114,10 @@ const Profile = () => {
             </div>
             <div className=' capitalize flex gap-[20px] '>
                 <span>birthday:</span>
-                <input  disabled={loading} required value={birthday} onChange={(e)=>setBirthday(e.target.value)} type='date'  className='border p-[5px] border-gray-500 '/>
+    <DatePicker
+      selected={birthday}
+      onChange={(date) => setBirthday(date)}
+    />
             </div>
             <button  onClick={(e)=>{
                 e.preventDefault()

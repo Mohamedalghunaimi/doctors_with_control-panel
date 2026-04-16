@@ -4,10 +4,13 @@ import Footer from '../compontents/Footer'
 import { doctors, specialityData } from '../assets_frontend/assets'
 import Doctors from '../compontents/Doctors'
 import { context } from './Provider'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 const AllDoctors = () => {
+  const [searchParams] = useSearchParams();
+  const typeFromQuery = searchParams.get("type")
   const {toTop,dbDoctors} = useContext(context)
-  const [type,setType] = useState("all")
+  const [type,setType] = useState(typeFromQuery || "all")
   const [filteredDoctors,setFilteredDoctors] = useState([])
   
   const filter = ()=> {
