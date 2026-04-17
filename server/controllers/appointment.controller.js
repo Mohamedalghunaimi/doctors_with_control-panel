@@ -244,18 +244,19 @@ const appointmentCompleted = async(req,res)=> {
                 message:"appointment is cancelled"
             })
         } 
-        if(appointment.payment) {
-            return res.json({
-                success:false,
-                message:"appointment is not paied"
-            })
-        }
         if(appointment.isCompleted) {
             return res.json({
                 success:false,
                 message:"appointment is completed"
             })
         }
+        if(!appointment.payment) {
+            return res.json({
+                success:false,
+                message:"appointment is not paied"
+            })
+        }
+
         appointment.isCompleted = true;
         await appointment.save();
         const copy = structuredClone(doctor.slots_books)

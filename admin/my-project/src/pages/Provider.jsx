@@ -100,6 +100,8 @@ const Provider = ({children}) => {
                 text: "Your file has been cancelled.",
                 icon: "success",
             });  
+      } else {
+        toast.error(data.message)
       }
     } catch (error) {
       console.error(error)
@@ -124,6 +126,9 @@ const Provider = ({children}) => {
             }
             return item
         }))
+        await getDashboardData()
+      } else {
+        toast.error(data.message)
       }
     } catch (error) {
       console.log(error)
